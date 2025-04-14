@@ -1,0 +1,126 @@
+Réalisation d'une application "Gest_Biblio" pour la gestion d'une bibliothèque avec la démarche suivante :
+------------------------------------------------------------------------------------------------------------------------
+1-Création d'une Base de données "bibliodata" sur MySQL avec les tables : livres, adhérant et emprunt
+- Table livres (la liste des livres avec détails d'information) :
+CREATE TABLE Livres (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Titre VARCHAR(255),
+    Auteur VARCHAR(255),
+    Annee_publication INT,
+    Statut VARCHAR(50),(contient comme info : « Disponible » ou « Non disponible »)
+    Nb_livre INT  );
+    --------------------------------------------------------------------------------------------------------------------
+- Table adhérant (la liste des adhérant qui peuvent emprunter un des livres de la table livres) :
+CREATE TABLE adhérant (
+    Id_adhérant INT PRIMARY KEY AUTO_INCREMENT,
+    Nom_adhérant VARCHAR(255)
+    Prénom_adhérant VARCHAR(255)
+    Date_adhésion DATE  );
+    --------------------------------------------------------------------------------------------------------------------
+- Table emprunts (les opérations d'emprunt des livres de la table livres par les adhérants de la tables adéhrant):
+CREATE TABLE emprunts (
+    Id_emprunt INT AUTO_INCREMENT PRIMARY KEY,
+    Id_livre INT,
+    Id_adhérant INT,
+    Date_emprunt DATE,
+    Date_retour DATE,
+    Statut_emprunt varchar(50),(contient comme info « Emprunté » ou « Récupéré »)
+    FOREIGN KEY (Id_livre) REFERENCES livres(Id),
+    FOREIGN KEY (Id_adhérant) REFERENCES adhérant(Id_adhérant));
+------------------------------------------------------------------------------------------------------------------------
+2- Création d'un nouveau projet Java : "GestBibilio"
+- Ajout de la libraries mysql-connector-j-9.2.0.jar dans Project Structure et dans les Modules/Dependencies
+- Ajout de la libraries jdatepicker.jar dans Project Structure pour l'utilitaire calendrier
+- Création de 3 packages:
+   - BDD : avec une class de connexion à une base de données « BiblioData » de type MySQL
+   - Models : pour crier des class d’objet relatif à 3 objets qui font référence aux trois tables de la base de données
+   "BibioData"
+   - DAO (Data Access Object): Pour interagir avec la source de données (pour la mise à jour sur la base de données)
+   - UI (User Interface): Des classes qui permet de générer des interfaces pour l'application
+------------------------------------------------------------------------------------------------------------------------
+3-Package BDD :
+   - Développement de la class BiblioData pour création d'une connexion à la BDD
+------------------------------------------------------------------------------------------------------------------------
+4-Package Models :
+   - Développement de la class d'objet "Livre" avec constructeurs, get, set et redéfinition de toString
+   - Développement de la class d'objet "Adhérant" avec constructeurs, get, set et redéfinition de toString
+   - Développement de la class d'objet "Emprunt" avec constructeurs, get, set et redéfinition de toString
+------------------------------------------------------------------------------------------------------------------------
+5- Package DAO : Data Access Object 
+- INTERAGIR AVEC LA SOURCE DE DONNEE
+- ON RECUPERE LES INFORMATIONS D'UN LIVRE(ID, TITRE, AUTEUR....) CES INFORMATION REPRESENTENT UN OBJET LIVRE
+- QUI VA ETRE UN OBJET LIVRE
+- POUR ECRIR SUR LA BAS DE DONNEE ON A BESOIN DE METHODES QUI PEUVENT INTERVENIR SUR LA BDD.
+- CES METHODES SONT DANS DES CLASSES DANS LE PACKAGE DAO
+
+   - Création d'une class LivreDAO qui permet la mise à jour des données sur la BDD avec les méthodes :
+     -	ajouterLivre : pour ajouter un nouveau livre sur la BDD, à mettre le Statut égale par défaut à « Disponible »
+     dans la table Livres
+     -	modifierLivre : pour mettre à jour les données d’un livre sur la BDD
+     -	LivreEmprunte : vérifie si le livre existe dans la table Eemprunt avec Statut_emprunt égale à « En cours »
+     -	LivreById : méthode avec requête pour récupérer un livre par ID
+     -	AllLivres : méthode avec requête pour récupérer tous les livres
+     -	LivresDisponibles : Méthode avec requête pour récupérer les livres avec Statut égale à « Disponible » dans
+     la table Livres
+     -	LivresEmpruntes : Méthode avec requête pour récupérer les livres avec Statut_emprunt égale à « Emprunté » dans
+     la table Emprunt
+     -	mettreAJourStatutLivre : Méthode avec requête pour mettre à jour le statut d'un livre dans la table Livres
+     -------------------------------------------------------------------------------------------------------------------
+   - Création d'une class AdhérantDAO qui permet la mise à jour des données sur la BDD avec les méthodes :
+     - ajouterAdhérant : Méthode avec requête pour ajouter un nouvel adhérent dans la table Adhérant
+     - modifierAdhérant : Méthode avec requête pour modifier un adhérent dans la table Adhérant
+     - supprimerAdhérant : Méthode avec requête pour supprimer un adhérent de la table Adhérant
+     - AdhérantEmprunt : Méthode avec requête pour vérifier si un adhérent a des emprunts dans la table emprunts avec
+     Statut_emprunt égale à « Emprunté »
+     - AdhérantById : Méthode avec requête pour récupérer un adhérent par son ID
+     - ListAdhérant : Méthode avec requête pour récupérer tous les adhérents
+     -------------------------------------------------------------------------------------------------------------------
+   - Création d'une class EmpruntDAO qui permet la mise à jour des données sur la BDD avec les méthodes :
+     - ajouterEmprunt : Méthode avec requête pour ajouter un nouvel emprunt
+     - IdLivreFromEmprunt : Méthode avec requête pour récupérer l'ID du livre à partir de l'ID de l'emprunt
+     - ExempleEmprunte : méthode qui calcul le nombre d’emprunt par Id_livre où Statut_emprunt est égale à « En cours »
+     - GererEmprunt : Méthode pour mettre à jour les données d’un emprunt, mise à jour uniquement des données,
+     « Date_retour » et « Statut_emprunt »
+     - EmpruntID : Méthode avec requête pour récupérer un emprunt par son ID
+     - HistEmprunts : Méthode pour récupérer toutes les opérations d'emprunts
+     - EmpruntsEnCours : Méthode avec requête pour récupérer les emprunts avec Statut_emprunt égale à « Emprunté »
+------------------------------------------------------------------------------------------------------------------------
+6- Package UI (User Interface) :
+   - InterfaceAdhérant : une class avec SWING qui permet :
+     - Ajouter un nouveau adhérant avec l’utilisation de la méthode « ajouterAdhérant » de la class AdhérantDAO
+     - Afficher la liste des adhérant avec utilisation de la méthode « ListAdhérant » de la class adhérantDAO ainsi que
+     s'il a un livre emprunté avec la méthode « AdhérantEmprunt »
+     - Modifier un adhérant avec l’utilisation de la méthode « modifierAdhérant » de la class adhérantDAO
+     - Supprimer un adhérant avec l’utilisation de la méthode « supprimerAdhérant » de la class adhérantDAO, mais cette
+     suppression doit être interdite si l’adhérant à des emprunts, vérification par la méthode « AdhérantEmprunt »
+   ---------------------------------------------------------------------------------------------------------------------
+   - InterfaceLivre : une class avec SWING qui permet :
+   - Ajouter un nouveau livre avec l’utilisation de la méthode « ajouterLivre » de la class LivreDAO
+   - Afficher la liste des livres avec utilisation de la méthode « AllLivres » de la class LivreDAO ainsi que la
+   disponibilité du livre avec la méthode « LivreEmprunte»
+   - Modifier un livre avec l’utilisation de la méthode « modifierLivre » de la class LivreDAO
+   - Supprimer un livre avec l’utilisation de la méthode « SupprimerLivre » de la class LivreDAO, mais cette suppression
+    est interdite si le livre est emprunté, la vérification se fait par la méthode « LivresEmpruntes »
+    --------------------------------------------------------------------------------------------------------------------
+   - InterfaceEmprunt : une class avec SWING qui permet :
+     - Ajouter un nouvel emprunt avec l’utilisation de la méthode « ajouterEmprunt » de la class EmpruntDAO
+     - Le choix de l’adhérant se fait par liste déroulante qui utilise la méthode « AdhérantById» de la class AdhérantDAO
+     - Le choit du livre se fait par liste déroulante qui utilise la méthode « LivreById » de la class LivreDAO
+     - Les livres à proposer doivent être seulement les livres disponible avec utilisation de la méthode
+     « LivresDisponibles » de la class LivreDAO
+     - Si le nombre de livre emprunté calculé par la méthode « ExempleEmprunte » est égale à  Nb_livre dans la table
+     Livres, mettre à jour le Statut dans la Table Livres à « Non Disponible » avec la méthode « mettreAJourStatutLivre »
+     de la class LivreDAO
+     -------------------------------------------------------------------------------------------------------------------
+   -InterfaceListe : une class avec SWING qui permet l'affichage des livres par état :
+     - Tous les livres avec utilisation de la méthode « AllLivres » de la class LivreDAO.
+     - les livres disponibles avec utilisation de la méthode « LivresDisponibles » de la class LivreDAO.
+     - Les livres empruntés avec utilisation de la méthode « LivresEmpruntes » de la class LivreDAO.
+      ------------------------------------------------------------------------------------------------------------------
+   - InterfaceBibilio : une class avec SWING pour l'affichage de la fenêtre principale du projet avec les boutons :
+     - Gestion des adhérants : excécute la class InterfaceAdhérant
+     - Gestion des Livres : exécute la class InterfaceLivre
+     - Nouveau Emprunt : pour exécuter la class InterfaceEmprunt
+     - Retour Emprunt : pour exécuter la class InterfaceRetourEmprunt
+     - Détails Livres : pour exécuter la class InterfaceListe
+------------------------------------------------------------------------------------------------------------------------
