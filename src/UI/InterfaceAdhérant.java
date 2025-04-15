@@ -28,7 +28,7 @@ public class InterfaceAdhérant extends JFrame {
     public InterfaceAdhérant() {
         // Initialisation de la DAO
         adhérantDAO = new AdhérantDAO();
-
+        // hello world
         // Configuration de la fenêtre
         setTitle("Gestion des Adhérents");
         setSize(600, 500);
