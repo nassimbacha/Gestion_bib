@@ -27,7 +27,7 @@ public class InterfaceBiblio extends JFrame {
         gbc.anchor = GridBagConstraints.NORTHWEST; // Les composants sont positionnés en haut à gauche
 
         // Ajout de l'image (assurez-vous que "library.jpg" est dans le même dossier)
-        ImageIcon imageIcon = new ImageIcon("D:\\\\SCIENCE DES DONNEES APPLIQUEES\\\\ETAPE_2\\\\PROG AVANCEE\\\\UA3\\\\Gest_Biblio\\\\Gest_Biblio\\\\bibliotheque.jpg");
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource("bibliotheque.jpg"));
         Image image = imageIcon.getImage().getScaledInstance(800, 600, Image.SCALE_SMOOTH); // L'image prend la taille de la fenêtre
         imageLabel = new JLabel(new ImageIcon(image));
         gbc.gridx = 0;
